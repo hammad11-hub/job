@@ -1,3 +1,5 @@
+const API_URL = "https://job-backend-production-734e.up.railway.app";
+
 let currentUser;
 try {
   currentUser = JSON.parse(localStorage.getItem("jobTrackerUser") || "null");
@@ -23,7 +25,7 @@ function apiHeaders(json = true) {
 }
 
 function fetchWithAuth(url, options = {}) {
-  return fetch(url, {
+  return fetch(API_URL + url, {
     credentials: "include",
     ...options,
     headers: {
