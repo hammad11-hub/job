@@ -1,3 +1,5 @@
+const API_URL = "https://job-backend-production-734e.up.railway.app";
+
 const card = document.getElementById("card");
 
 document.addEventListener("mousemove", (e) => {
@@ -38,7 +40,7 @@ async function handleSubmit() {
 
   if (isLogin) {
     try {
-      const res = await fetch("/login", {
+      const res = await fetch(API_URL + "/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -59,7 +61,7 @@ async function handleSubmit() {
     }
   } else {
     try {
-      const res = await fetch("/register", {
+      const res = await fetch(API_URL + "/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
