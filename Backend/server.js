@@ -50,12 +50,23 @@ const upload = multer({
 });
 
 let transporter;
+const mailerTimeouts = {
+  connectionTimeout: process.env.EMAIL_CONNECTION_TIMEOUT_MS
+    ? Number(process.env.EMAIL_CONNECTION_TIMEOUT_MS)
+    : 10000,
+  greetingTimeout: process.env.EMAIL_GREETING_TIMEOUT_MS
+    ? Number(process.env.EMAIL_GREETING_TIMEOUT_MS)
+    : 10000,
+  socketTimeout: process.env.EMAIL_SOCKET_TIMEOUT_MS ? Number(process.env.EMAIL_SOCKET_TIMEOUT_MS) : 15000,
+};
+
 async function initMailer() {
   if (process.env.EMAIL_USER && process.env.EMAIL_PASS && process.env.EMAIL_HOST) {
     transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587,
       secure: false,
+      ...mailerTimeouts,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -67,6 +78,7 @@ async function initMailer() {
       host: "smtp.ethereal.email",
       port: 587,
       secure: false,
+      ...mailerTimeouts,
       auth: {
         user: testAccount.user,
         pass: testAccount.pass,
