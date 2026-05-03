@@ -1,4 +1,6 @@
-const API_URL = "https://job-backend-production-734e.up.railway.app";
+const API_URL = window.location.hostname.includes("localhost")
+  ? "http://localhost:5000"
+  : "https://job-backend-production-734e.up.railway.app";
 
 let currentUser;
 try {
@@ -60,6 +62,57 @@ function showToast(message, success = true) {
   }, 3000);
 }
 
+async function loadBillingStatus() {
+  try {
+    const res = await fetchWithAuth("/api/payments/subscription", { headers: apiHeaders(false) });
+    if (!res.ok) return;
+    const data = await res.json();
+    currentUser = { ...currentUser, ...data };
+    localStorage.setItem("jobTrackerUser", JSON.stringify(currentUser));
+    renderPlanBadge();
+  } catch {
+    /* ignore */
+  }
+}
+
+function renderPlanBadge() {
+  const badge = document.getElementById("planBadge");
+  const action = document.getElementById("billingActionButton");
+  if (badge) {
+    const planLabel = currentUser.plan ? currentUser.plan.toUpperCase() : "FREE";
+    badge.textContent = `${planLabel} plan`;
+  }
+  if (!action) return;
+  if (currentUser.plan === "free") {
+    action.textContent = "Upgrade";
+    action.onclick = () => {
+      window.location.href = "../pricing.html";
+    };
+  } else {
+    action.textContent = "Manage Billing";
+    action.onclick = handleBillingAction;
+  }
+}
+
+async function handleBillingAction() {
+  try {
+    const res = await fetchWithAuth("/api/payments/portal-session", {
+      method: "POST",
+      headers: apiHeaders(),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      showToast(data.error || data.message || "Unable to open billing portal", false);
+      return;
+    }
+    if (data.url) {
+      window.location.href = data.url;
+    }
+  } catch {
+    showToast("Unable to open billing portal.", false);
+  }
+}
+
 function reminderEmailKey() {
   return `reminderEmail_${currentUser.id}`;
 }
@@ -81,7 +134,7 @@ function loadReminderEmail() {
 
 async function loadJobsFromServer() {
   try {
-    const res = await fetchWithAuth("/api/jobs", { headers: apiHeaders(false) });
+    const res = await fetchWithAuth("/api/applications", { headers: apiHeaders(false) });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       showToast(err.message || "Could not load jobs", false);
@@ -583,7 +636,7 @@ async function saveJob() {
 
   try {
     if (editIndex !== null && existingJob?._id) {
-      const res = await fetchWithAuth(`/api/jobs/${existingJob._id}`, {
+      const res = await fetchWithAuth(`/api/applications/${existingJob._id}`, {
         method: "PUT",
         headers: apiHeaders(),
         body: JSON.stringify(payload),
@@ -593,7 +646,7 @@ async function saveJob() {
         throw new Error(err.message || err.error || "Update failed");
       }
     } else {
-      const res = await fetchWithAuth("/api/jobs", {
+      const res = await fetchWithAuth("/api/applications", {
         method: "POST",
         headers: apiHeaders(),
         body: JSON.stringify(payload),
@@ -690,7 +743,7 @@ async function deleteJob(index) {
 
   if (job._id) {
     try {
-      const res = await fetchWithAuth(`/api/jobs/${job._id}`, {
+      const res = await fetchWithAuth(`/api/applications/${job._id}`, {
         method: "DELETE",
         headers: apiHeaders(false),
       });
@@ -990,6 +1043,8 @@ function drawStatusViz3d() {
       ? `${currentUser.name} (${currentUser.email})`
       : currentUser.email;
   }
+  renderPlanBadge();
+  await loadBillingStatus();
   await populateCareerFieldSelect();
   await loadCareerProfileForm();
   await loadJobsFromServer();

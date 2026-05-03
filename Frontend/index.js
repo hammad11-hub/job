@@ -1,4 +1,6 @@
-const API_URL = "https://job-backend-production-734e.up.railway.app";
+const API_URL = window.location.hostname.includes("localhost")
+  ? "http://localhost:5000"
+  : "https://job-backend-production-734e.up.railway.app";
 
 const card = document.getElementById("card");
 
@@ -21,6 +23,7 @@ function toggleForm() {
   isLogin = !isLogin;
   document.getElementById("formTitle").innerText = isLogin ? "Login" : "Register";
   document.getElementById("nameField").style.display = isLogin ? "none" : "block";
+  document.getElementById("roleField").style.display = isLogin ? "none" : "block";
   document.querySelector(".toggle").innerText = isLogin ? "Switch to Register" : "Switch to Login";
 }
 
@@ -29,6 +32,7 @@ async function handleSubmit() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const name = document.getElementById("name")?.value.trim() || "";
+  const role = document.getElementById("role")?.value || "jobseeker";
 
   if (!email || !password) {
     error.style.color = "yellow";
@@ -50,7 +54,11 @@ async function handleSubmit() {
       if (res.ok && data.user && data.token) {
         localStorage.setItem("jobTrackerUser", JSON.stringify(data.user));
         localStorage.setItem("jobTrackerToken", data.token);
-        window.location.href = "./dashboard/dashboard.html";
+        if (data.user.role === "employer") {
+          window.location.href = "./dashboard/employer-dashboard.html";
+        } else {
+          window.location.href = "./dashboard/dashboard.html";
+        }
       } else {
         error.style.color = "yellow";
         error.innerText = data.message || "Invalid login response.";
@@ -65,7 +73,7 @@ async function handleSubmit() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, role }),
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok) {
@@ -82,3 +90,37 @@ async function handleSubmit() {
     }
   }
 }
+
+function setGoogleAuthButton() {
+  const googleButton = document.getElementById("googleAuth");
+  if (!googleButton) return;
+  googleButton.href = `${API_URL}/api/auth/google`;
+}
+
+function parseQueryString() {
+  return new URLSearchParams(window.location.search);
+}
+
+async function handleOAuthRedirect() {
+  const params = parseQueryString();
+  const token = params.get("token");
+  if (!token) return;
+
+  localStorage.setItem("jobTrackerToken", token);
+  try {
+    const res = await fetch(`${API_URL}/api/me`, {
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.user) {
+      localStorage.setItem("jobTrackerUser", JSON.stringify(data.user));
+      window.location.href = "./dashboard/dashboard.html";
+      return;
+    }
+  } catch (e) {
+    console.error("OAuth callback error", e);
+  }
+}
+
+setGoogleAuthButton();
+handleOAuthRedirect();

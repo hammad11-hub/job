@@ -1,5 +1,21 @@
 {
   "dependencies": {
-    "git": "^0.1.5"
+    "@stripe/react-stripe-js": "^6.3.0",
+    "@stripe/stripe-js": "^9.4.0",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tanstack/react-query": "^5.100.9",
+    "autoprefixer": "^10.5.0",
+    "axios": "^1.16.0",
+    "chart.js": "^4.5.1",
+    "date-fns": "^4.1.0",
+    "git": "^0.1.5",
+    "lucide-react": "^1.14.0",
+    "postcss": "^8.5.13",
+    "react-chartjs-2": "^5.3.1",
+    "react-dropzone": "^15.0.0",
+    "react-hot-toast": "^2.6.0",
+    "react-router-dom": "^7.14.2",
+    "tailwindcss": "^4.2.4"
   }
 }

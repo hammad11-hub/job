@@ -82,6 +82,33 @@ body::before {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.plan-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.plan-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.14);
+  color: #dbeafe;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+}
+
+.plan-action-btn {
+  padding: 10px 18px;
+  border-radius: 14px;
+  font-weight: 700;
+}
+
 .logout-btn {
   margin: 0;
   padding: 6px 12px;

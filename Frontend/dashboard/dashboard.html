@@ -16,6 +16,10 @@
         <p class="eyebrow">Job Tracker</p>
         <h1>Job Application Dashboard</h1>
         <p class="subheading">Manage your applications, reminders, and resume uploads with a sleek 3D workspace.</p>
+        <div class="plan-strip">
+          <p class="plan-pill" id="planBadge">Free plan</p>
+          <button class="secondary-btn plan-action-btn" type="button" id="billingActionButton" onclick="handleBillingAction()">Upgrade</button>
+        </div>
         <p class="user-pill"><span id="currentUserLabel"></span><button type="button" class="logout-btn" onclick="logout()">Log out</button></p>
       </div>
       <button class="primary-btn" type="button" onclick="openFormForNew()">➕ Add Job</button>

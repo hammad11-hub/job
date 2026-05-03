@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Jobs | Job Tracker</title>
+  <link rel="stylesheet" href="site.css" />
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">Job Tracker</div>
+    <div class="menu">
+      <a href="home.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a href="contact.html">Contact</a>
+      <a class="btn alt" href="login.html">Login</a>
+    </div>
+  </nav>
+
+  <main class="jobs-page layout">
+    <aside class="sidebar" id="filterSidebar">
+      <div class="sidebar-header">
+        <h2>Filters</h2>
+        <button class="mobile-close" id="closeFilters">Close</button>
+      </div>
+      <div class="filter-group">
+        <label for="keyword">Search</label>
+        <input id="keyword" type="text" placeholder="Keyword, title, skill" />
+      </div>
+      <div class="filter-group">
+        <label for="location">Location</label>
+        <input id="location" type="text" placeholder="City, region, remote" />
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Job type</span>
+        <label><input type="checkbox" name="type" value="full-time" /> Full-time</label>
+        <label><input type="checkbox" name="type" value="part-time" /> Part-time</label>
+        <label><input type="checkbox" name="type" value="remote" /> Remote</label>
+        <label><input type="checkbox" name="type" value="contract" /> Contract</label>
+        <label><input type="checkbox" name="type" value="internship" /> Internship</label>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Experience</span>
+        <label><input type="radio" name="experience" value="any" checked /> Any</label>
+        <label><input type="radio" name="experience" value="entry" /> Entry</label>
+        <label><input type="radio" name="experience" value="mid" /> Mid</label>
+        <label><input type="radio" name="experience" value="senior" /> Senior</label>
+        <label><input type="radio" name="experience" value="lead" /> Lead</label>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label" for="salaryMin">Salary range</label>
+        <div class="salary-row">
+          <input id="salaryMin" type="number" placeholder="Min" min="0" />
+          <input id="salaryMax" type="number" placeholder="Max" min="0" />
+        </div>
+        <div class="salary-label" id="salaryLabel">PKR 0 — PKR 0</div>
+      </div>
+      <div class="filter-group">
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="">All categories</option>
+        </select>
+      </div>
+      <div class="filter-group filter-toggle">
+        <label><input id="remoteOnly" type="checkbox" /> Remote only</label>
+      </div>
+      <div class="filter-actions">
+        <button id="applyFilters">Apply Filters</button>
+        <button id="clearFilters" class="link-button">Clear All</button>
+      </div>
+    </aside>
+
+    <section class="jobs-content">
+      <div class="jobs-heading">
+        <div>
+          <h1>Advanced Job Search</h1>
+          <p id="resultsSummary">Loading jobs...</p>
+        </div>
+        <button class="btn secondary mobile-only" id="openFilters">Filters</button>
+      </div>
+      <div class="jobs-grid" id="jobsGrid"></div>
+      <div class="pagination" id="pagination"></div>
+    </section>
+  </main>
+
+  <script src="jobs.js"></script>
+</body>
+</html>

@@ -61,6 +61,37 @@ button:hover {
   background: #ff416c;
 }
 
+.social-button,
+.auth-links a {
+  display: block;
+  text-align: center;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.social-button {
+  background: #4285f4;
+  color: #fff;
+}
+
+.social-button:hover {
+  background: #3367d6;
+}
+
+.auth-links a {
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.auth-links {
+  text-align: center;
+}
+
 .toggle {
   text-align: center;
   margin-top: 10px;

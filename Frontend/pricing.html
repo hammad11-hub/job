@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Tracker Pricing</title>
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <canvas id="bgFx"></canvas>
+  <main class="layout">
+    <nav class="nav">
+      <div class="brand">Job Tracker</div>
+      <div class="menu">
+        <a href="home.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a class="btn alt" href="login.html">Login</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <span class="eyebrow">Monetize your hiring workflow</span>
+      <h1>Plans for employers who want faster hiring and premium listings</h1>
+      <p>Choose the right plan for your company: publish unlimited jobs, feature listings, export applicants, and manage billing through Stripe.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#pro">Start Pro</a>
+        <a class="btn alt" href="#enterprise">Start Enterprise</a>
+      </div>
+    </section>
+
+    <section class="grid cols-3 feature-grid">
+      <article class="card">
+        <h3>Free</h3>
+        <p class="plan-price">$0 / month</p>
+        <ul class="feature-list">
+          <li>1 active job post</li>
+          <li>Basic job listing</li>
+          <li>No analytics</li>
+          <li>No AI match scores</li>
+          <li>No featured listings</li>
+        </ul>
+        <a class="btn alt" href="register.html">Get Started</a>
+      </article>
+      <article class="card highlight-card" id="pro">
+        <span class="badge most-popular">Most popular</span>
+        <h3>Pro</h3>
+        <p class="plan-price">$29 / month</p>
+        <ul class="feature-list">
+          <li>Unlimited job posts</li>
+          <li>Full analytics dashboard</li>
+          <li>AI match scores on applicants</li>
+          <li>3 featured listings / month</li>
+          <li>Email support</li>
+        </ul>
+        <button class="btn" type="button" onclick="createCheckout('pro')">Start Pro</button>
+      </article>
+      <article class="card" id="enterprise">
+        <h3>Enterprise</h3>
+        <p class="plan-price">$99 / month</p>
+        <ul class="feature-list">
+          <li>Everything in Pro</li>
+          <li>10 featured listings / month</li>
+          <li>CSV export of applicants</li>
+          <li>Company profile page</li>
+          <li>Priority support badge</li>
+        </ul>
+        <button class="btn alt" type="button" onclick="createCheckout('enterprise')">Start Enterprise</button>
+      </article>
+    </section>
+
+    <section class="panel hero-panel" id="paymentBanner" hidden>
+      <p id="paymentBannerText"></p>
+    </section>
+  </main>
+  <script src="pricing.js"></script>
+</body>
+</html>
