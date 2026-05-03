@@ -451,7 +451,7 @@ app.post(
   [
     body("email").isEmail().withMessage("A valid email address is required.").normalizeEmail(),
     body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters."),
-    body("name").optional({ checkFalsy: true }).trim().isLength({ min: 1 }).withMessage("Name must not be empty if provided."),
+    body("name").optional({ values: "falsy" }).trim().isLength({ min: 1 }).withMessage("Name must not be empty if provided."),
     body("role").optional().isIn(["jobseeker", "employer"]).withMessage("Invalid role."),
   ],
   validateRequest,
