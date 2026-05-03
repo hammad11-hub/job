@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, User, Briefcase, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { loginUser, registerUser } from '../api/jobsApi';
@@ -8,7 +8,12 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
 const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const location = useLocation();
+  const [isLogin, setIsLogin] = useState(!location.pathname.includes('register'));
+
+  useEffect(() => {
+    setIsLogin(!location.pathname.includes('register'));
+  }, [location.pathname]);
   const [formData, setFormData] = useState({ email: '', password: '', name: '', role: 'jobseeker' });
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -22,14 +27,28 @@ const Login = () => {
         const res = await loginUser({ email: formData.email, password: formData.password });
         login(res.data.user, res.data.token);
         toast.success('Logged in successfully!');
-        navigate('/dashboard');
+        
+        // Redirect logic: Employers without a paid plan go to pricing
+        if (res.data.user.role === 'employer' && res.data.user.plan === 'free') {
+          navigate('/pricing');
+        } else {
+          navigate('/dashboard');
+        }
       } else {
-        await registerUser(formData);
-        toast.success('Registration successful! Please login.');
-        setIsLogin(true);
+        const res = await registerUser(formData);
+        // Auto-login after registration
+        login(res.data.user, res.data.token);
+        toast.success('Account created successfully!');
+        
+        if (formData.role === 'employer') {
+          navigate('/pricing');
+        } else {
+          navigate('/dashboard');
+        }
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Authentication failed');
+      const errorMessage = err.response?.data?.errors?.[0]?.message || err.response?.data?.message || 'Authentication failed';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

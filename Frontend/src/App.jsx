@@ -13,9 +13,6 @@ import Pricing from './pages/Pricing';
 import EmployerDashboard from './pages/dashboard/EmployerDashboard';
 import JobSeekerDashboard from './pages/dashboard/JobSeekerDashboard';
 
-// Temporary components for pages not yet implemented
-const Register = () => <Navigate to="/login" replace />;
-
 const queryClient = new QueryClient();
 
 function App() {
@@ -31,7 +28,7 @@ function App() {
             <Route path="/jobs/:id" element={<JobDetail />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Login />} />
 
             {/* Protected Routes */}
             <Route
@@ -71,6 +68,9 @@ function App() {
 function DashboardRedirect() {
   const { user } = useAuth();
   if (user?.role === 'employer') {
+    if (user.plan === 'free') {
+      return <Navigate to="/pricing" replace />;
+    }
     return <Navigate to="/dashboard/employer" replace />;
   }
   return <Navigate to="/dashboard/jobseeker" replace />;

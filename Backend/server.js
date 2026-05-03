@@ -331,7 +331,7 @@ function userToClient(userDoc) {
   };
 }
 
-app.post("/upload-resume", requireUserId, upload.single("resume"), (req, res) => {
+app.post("/api/upload-resume", requireUserId, upload.single("resume"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No resume uploaded" });
   }
@@ -339,11 +339,11 @@ app.post("/upload-resume", requireUserId, upload.single("resume"), (req, res) =>
 });
 
 app.post(
-  "/send-reminder",
+  "/api/send-reminder",
   requireUserId,
   reminderLimiter,
   [
-    body("email").isEmail().withMessage("A valid email address is required."),
+    body("email").isEmail().withMessage("A valid email address is required.").normalizeEmail(),
     body("company").trim().notEmpty().withMessage("Company is required."),
     body("role").trim().notEmpty().withMessage("Role is required."),
   ],
@@ -444,10 +444,10 @@ cron.schedule("0 0 * * *", () => {
 expireFeaturedJobs().catch(() => {});
 
 app.post(
-  "/register",
+  "/api/register",
   authLimiter,
   [
-    body("email").isEmail().withMessage("A valid email address is required."),
+    body("email").isEmail().withMessage("A valid email address is required.").normalizeEmail(),
     body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters."),
     body("name").optional().trim().isLength({ min: 1 }).withMessage("Name cannot be empty."),
     body("role").optional().isIn(["jobseeker", "employer"]).withMessage("Invalid role."),
@@ -483,10 +483,10 @@ app.post(
 });
 
 app.post(
-  "/login",
+  "/api/login",
   authLimiter,
   [
-    body("email").isEmail().withMessage("A valid email address is required."),
+    body("email").isEmail().withMessage("A valid email address is required.").normalizeEmail(),
     body("password").exists().withMessage("Password is required."),
   ],
   validateRequest,
@@ -506,7 +506,7 @@ app.post(
     const token = signAuthToken(user);
     setAuthCookie(res, token);
 
-    return res.status(200).json({
+    return res.json({
       message: "Login successful",
       user: userToClient(user),
       token,
@@ -516,7 +516,7 @@ app.post(
   }
 });
 
-app.post("/logout", (req, res) => {
+app.post("/api/logout", (req, res) => {
   clearAuthCookie(res);
   return res.status(200).json({ message: "Logged out" });
 });
