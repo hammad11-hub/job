@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { getJobDetails } from '../api/jobsApi';
+import api, { getJobDetails } from '../api/jobsApi';
 import Navbar from '../components/layout/Navbar';
 import Button from '../components/ui/Button';
 import { MapPin, Briefcase, Clock, Building2, Globe, DollarSign, Calendar, Share2, Bookmark, CheckCircle2 } from 'lucide-react';
@@ -21,13 +21,29 @@ const JobDetail = () => {
 
   const job = jobData?.data?.job;
 
+  const applyMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.post(`/jobs/${id}/apply`, {
+        resumeUrl: user?.resumeUrl || '',
+        coverLetter: '', // Could add a field for this later
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success('Application submitted successfully!');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.message || 'Failed to submit application');
+    },
+  });
+
   const handleApply = () => {
     if (!isAuthenticated) {
       toast.error('Please login to apply');
       navigate('/login');
       return;
     }
-    toast.success('Application submitted! (Demo)');
+    applyMutation.mutate();
   };
 
   if (isLoading) return (

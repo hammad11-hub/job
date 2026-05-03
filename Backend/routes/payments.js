@@ -11,9 +11,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 
 export function createPaymentsRouter(transporter) {
   const router = express.Router();
-  router.use(requireUserId);
 
-  router.post("/create-checkout-session", async (req, res) => {
+  router.post("/create-checkout-session", requireUserId, async (req, res) => {
     try {
       if (!req.userId) {
         return res.status(401).json({ message: "Missing auth token" });
@@ -47,8 +46,8 @@ export function createPaymentsRouter(transporter) {
           },
         ],
         mode: "subscription",
-        success_url: `${process.env.CLIENT_URL || "http://localhost:3000"}/dashboard/employer-dashboard.html?payment=success`,
-        cancel_url: `${process.env.CLIENT_URL || "http://localhost:3000"}/pricing.html?payment=cancelled`,
+        success_url: `${process.env.CLIENT_URL || "http://localhost:3000"}/dashboard/employer?payment=success`,
+        cancel_url: `${process.env.CLIENT_URL || "http://localhost:3000"}/pricing?payment=cancelled`,
         metadata: {
           userId: String(user._id),
           plan,
@@ -171,7 +170,7 @@ export function createPaymentsRouter(transporter) {
     return res.status(200).json({ received: true });
   });
 
-  router.post("/cancel-subscription", async (req, res) => {
+  router.post("/cancel-subscription", requireUserId, async (req, res) => {
     try {
       if (!req.userId) {
         return res.status(401).json({ message: "Missing auth token" });
@@ -194,7 +193,7 @@ export function createPaymentsRouter(transporter) {
     }
   });
 
-  router.get("/subscription", async (req, res) => {
+  router.get("/subscription", requireUserId, async (req, res) => {
     try {
       if (!req.userId) {
         return res.status(401).json({ message: "Missing auth token" });
@@ -215,7 +214,7 @@ export function createPaymentsRouter(transporter) {
     }
   });
 
-  router.post("/portal-session", async (req, res) => {
+  router.post("/portal-session", requireUserId, async (req, res) => {
     try {
       if (!req.userId) {
         return res.status(401).json({ message: "Missing auth token" });
@@ -226,7 +225,7 @@ export function createPaymentsRouter(transporter) {
       }
       const session = await stripe.billingPortal.sessions.create({
         customer: user.stripeCustomerId,
-        return_url: `${process.env.CLIENT_URL || "http://localhost:3000"}/dashboard/employer-dashboard.html`,
+        return_url: `${process.env.CLIENT_URL || "http://localhost:3000"}/dashboard/employer`,
       });
       return res.json({ url: session.url });
     } catch (err) {

@@ -14,6 +14,8 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import cron from "node-cron";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { body, param } from "express-validator";
 import { User } from "./models/User.js";
 import { JobApplication } from "./models/JobApplication.js";
@@ -218,8 +220,8 @@ function hashResetToken(token) {
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientID: process.env.GOOGLE_CLIENT_ID || "placeholder_id",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "placeholder_secret",
       callbackURL: `${backendUrl}${oauthCallbackPath}`,
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -927,10 +929,72 @@ app.get("/api/jobs/:id", async (req, res) => {
   }
 });
 
+app.post("/api/jobs/:id/apply", requireUserId, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resumeUrl, coverLetter } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid job id" });
+    }
+    const job = await Job.findById(id);
+    if (!job || job.status !== "active") {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    const existingApplication = await Application.findOne({
+      job: id,
+      applicant: req.userId,
+    });
+    if (existingApplication) {
+      return res.status(400).json({ message: "You have already applied for this job." });
+    }
+
+    const application = await Application.create({
+      job: id,
+      applicant: req.userId,
+      resumeUrl: resumeUrl || "",
+      coverLetter: coverLetter || "",
+      appliedAt: new Date(),
+    });
+
+    // Update job with applicant reference
+    job.applicants = job.applicants || [];
+    job.applicants.push(req.userId);
+    await job.save();
+
+    return res.status(201).json({ message: "Applied successfully", application });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 app.get("/api/applications", requireUserId, async (req, res) => {
   try {
     const list = await JobApplication.find({ userId: req.userId }).sort({ updatedAt: -1 }).lean();
     return res.json({ jobs: list.map((j) => jobToClient(j)) });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/my-portal-applications", requireUserId, async (req, res) => {
+  try {
+    const apps = await Application.find({ applicant: req.userId })
+      .populate("job", "title company location type")
+      .sort({ createdAt: -1 })
+      .lean();
+    return res.json({
+      applications: apps.map((app) => ({
+        id: String(app._id),
+        jobId: String(app.job?._id),
+        title: app.job?.title || "Unknown Position",
+        company: app.job?.company || "Unknown Company",
+        location: app.job?.location || "Unknown Location",
+        type: app.job?.type || "full-time",
+        status: app.status,
+        appliedAt: app.appliedAt,
+      })),
+    });
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
