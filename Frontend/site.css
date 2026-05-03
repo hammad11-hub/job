@@ -186,13 +186,30 @@ body::before {
   gap: 12px;
 }
 
-.grid {
+.review-grid {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
 
-.grid.cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.review-card {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.review-card p {
+  color: var(--text);
+}
+
+.review-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .grid.cols-2 {
@@ -345,8 +362,18 @@ body::before {
 }
 
 @media (max-width: 900px) {
+  .nav {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .menu {
+    justify-content: space-between;
+  }
+
   .grid.cols-3,
   .grid.cols-2,
+  .review-grid,
   .stats-grid,
   .timeline {
     grid-template-columns: 1fr;
@@ -358,5 +385,41 @@ body::before {
 
   .layout {
     padding: 24px 16px 56px;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav {
+    padding: 14px 16px;
+  }
+
+  .hero {
+    padding: 24px 18px;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .menu a {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+
+  .btn,
+  .btn.alt {
+    width: 100%;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .card,
+  .story-card,
+  .stat-card,
+  .timeline-item,
+  .contact-panel {
+    padding: 18px;
   }
 }

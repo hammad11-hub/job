@@ -8,7 +8,7 @@ try {
 }
 const authToken = localStorage.getItem("jobTrackerToken") || "";
 if (!currentUser?.id) {
-  window.location.replace("../index.html");
+  window.location.replace("../login.html");
 }
 
 let jobs = [];
@@ -38,7 +38,7 @@ function logout() {
   fetchWithAuth("/logout", { method: "POST" }).finally(() => {
     localStorage.removeItem("jobTrackerUser");
     localStorage.removeItem("jobTrackerToken");
-    window.location.replace("../index.html");
+    window.location.replace("../login.html");
   });
 }
 

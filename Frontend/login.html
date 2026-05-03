@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Job Tracker</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div style="position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:3; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+    <a href="home.html" style="text-decoration:none; color:#fff; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:999px; font-family:Arial;">Home</a>
+    <a href="about.html" style="text-decoration:none; color:#fff; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:999px; font-family:Arial;">About</a>
+    <a href="services.html" style="text-decoration:none; color:#fff; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:999px; font-family:Arial;">Services</a>
+    <a href="contact.html" style="text-decoration:none; color:#fff; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:999px; font-family:Arial;">Contact</a>
+    <a href="login.html" style="text-decoration:none; color:#fff; background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.2); padding:8px 12px; border-radius:999px; font-family:Arial;">Login</a>
+  </div>
+  <div class="container">
+    <div class="card" id="card">
+      <h2 id="formTitle">Login</h2>
+      <div class="input-box" id="nameField" style="display:none;">
+        <input type="text" id="name" name="name" placeholder="Name">
+      </div>
+      <div class="input-box">
+        <input type="text" id="email" name="email" placeholder="Email">
+      </div>
+      <div class="input-box">
+        <input type="password" id="password" name="password" placeholder="Password">
+      </div>
+      <button onclick="handleSubmit()">Submit</button>
+      <p class="error" id="error"></p>
+      <div class="toggle" onclick="toggleForm()">
+        Switch to Register
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+
+</html>

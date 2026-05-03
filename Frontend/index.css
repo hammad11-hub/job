@@ -68,6 +68,18 @@ button:hover {
   cursor: pointer;
 }
 
+@media (max-width: 520px) {
+  .card {
+    width: min(100%, 360px);
+    padding: 24px;
+  }
+
+  .input-box input,
+  button {
+    font-size: 1rem;
+  }
+}
+
 .error {
   color: yellow;
   font-size: 12px;
