@@ -47,7 +47,13 @@ const Login = () => {
         }
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.errors?.[0]?.message || err.response?.data?.message || 'Authentication failed';
+      console.error('Auth error:', err.response?.data);
+      const backendError = err.response?.data;
+      const errorMessage = 
+        backendError?.errors?.[0]?.message || 
+        backendError?.error || 
+        backendError?.message || 
+        'Authentication failed';
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);

@@ -331,6 +331,8 @@ function userToClient(userDoc) {
   };
 }
 
+
+
 app.post("/api/upload-resume", requireUserId, upload.single("resume"), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: "No resume uploaded" });
@@ -449,26 +451,33 @@ app.post(
   [
     body("email").isEmail().withMessage("A valid email address is required.").normalizeEmail(),
     body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters."),
-    body("name").optional().trim().isLength({ min: 1 }).withMessage("Name cannot be empty."),
+    body("name").optional({ checkFalsy: true }).trim().isLength({ min: 1 }).withMessage("Name must not be empty if provided."),
     body("role").optional().isIn(["jobseeker", "employer"]).withMessage("Invalid role."),
   ],
   validateRequest,
   async (req, res) => {
     try {
+      console.log("Registration attempt:", req.body);
       const { email, password, name, role } = req.body;
 
-      const existingUser = await User.findOne({ email: String(email).toLowerCase().trim() });
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      const normalizedEmail = String(email).toLowerCase().trim();
+      const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = await User.create({
-      email: String(email).toLowerCase().trim(),
+      email: normalizedEmail,
       passwordHash,
       name: typeof name === "string" ? name.trim() : "",
       role: role || "jobseeker",
     });
+    console.log("User created successfully:", newUser._id);
     const token = signAuthToken(newUser);
     setAuthCookie(res, token);
 
@@ -478,7 +487,12 @@ app.post(
       token,
     });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error("Registration error:", err);
+    return res.status(500).json({ 
+      message: "Registration failed", 
+      error: err.message,
+      details: err.errors // Mongoose validation errors
+    });
   }
 });
 
