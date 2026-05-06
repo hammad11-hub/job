@@ -182,10 +182,13 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.get("*", (req, res) => {
+// Catch-all to serve index.html for React SPA (Express 5 compatible)
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api") || req.path.startsWith("/uploads") || req.path === "/health") {
+    return next();
+  }
   res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
-
 
 function signAuthToken(userDoc) {
   return jwt.sign(
