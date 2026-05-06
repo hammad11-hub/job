@@ -173,12 +173,17 @@ app.use("/uploads", express.static(uploadDir));
 app.use("/api", apiLimiter);
 app.use("/api/payments", createPaymentsRouter(transporter));
 app.use("/api/employer", createEmployerRouter());
+
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "ok",
     uptimeSeconds: Math.round(process.uptime()),
     timestamp: new Date().toISOString(),
   });
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../Frontend/index.html"));
 });
 
 
