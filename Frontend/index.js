@@ -1,6 +1,4 @@
-const API_URL = window.location.hostname.includes("localhost")
-  ? "http://localhost:5000"
-  : "https://job-backend-production-734e.up.railway.app";
+const API_URL = ""; // Relative URL since we are serving frontend from backend
 
 const card = document.getElementById("card");
 
