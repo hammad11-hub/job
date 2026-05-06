@@ -159,7 +159,14 @@ const reminderLimiter = rateLimit({
   message: { message: "Too many reminder requests. Please try later." },
 });
 
-app.use(express.static(path.resolve(__dirname, "..", "Frontend")));
+// Static file serving logic
+const frontendPath = path.resolve(__dirname, "..", "dist");
+const fallbackPath = path.resolve(__dirname, "..", "Frontend");
+
+// Serve static files from 'dist' if it exists (production), otherwise 'Frontend' (dev)
+const staticPath = fs.existsSync(frontendPath) ? frontendPath : fallbackPath;
+app.use(express.static(staticPath));
+
 app.use((req, res, next) => {
   if (req.originalUrl === "/api/payments/webhook") {
     return next();
@@ -187,10 +194,11 @@ app.use((req, res, next) => {
   if (req.path.startsWith("/api") || req.path.startsWith("/uploads") || req.path === "/health") {
     return next();
   }
-  const indexPath = path.resolve(__dirname, "..", "Frontend", "index.html");
+  
+  const indexPath = path.join(staticPath, "index.html");
   if (!fs.existsSync(indexPath)) {
     console.error(`Frontend index.html not found at: ${indexPath}`);
-    return res.status(404).send("Frontend build not found. Please build the frontend first.");
+    return res.status(404).send("Frontend build not found. Please run 'npm run build' first.");
   }
   res.sendFile(indexPath);
 });
