@@ -44,7 +44,7 @@ async function handleSubmit() {
 
   if (isLogin) {
     try {
-      const res = await fetch(API_URL + "/login", {
+      const res = await fetch(API_URL + "/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -69,7 +69,7 @@ async function handleSubmit() {
     }
   } else {
     try {
-      const res = await fetch(API_URL + "/register", {
+      const res = await fetch(API_URL + "/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

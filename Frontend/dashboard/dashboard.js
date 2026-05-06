@@ -37,7 +37,7 @@ function fetchWithAuth(url, options = {}) {
 }
 
 function logout() {
-  fetchWithAuth("/logout", { method: "POST" }).finally(() => {
+  fetchWithAuth("/api/logout", { method: "POST" }).finally(() => {
     localStorage.removeItem("jobTrackerUser");
     localStorage.removeItem("jobTrackerToken");
     window.location.replace("../login.html");
