@@ -159,7 +159,7 @@ const reminderLimiter = rateLimit({
   message: { message: "Too many reminder requests. Please try later." },
 });
 
-app.use(express.static(path.join(__dirname, "../Frontend")));
+app.use(express.static(path.resolve(__dirname, "..", "Frontend")));
 app.use((req, res, next) => {
   if (req.originalUrl === "/api/payments/webhook") {
     return next();
@@ -187,7 +187,12 @@ app.use((req, res, next) => {
   if (req.path.startsWith("/api") || req.path.startsWith("/uploads") || req.path === "/health") {
     return next();
   }
-  res.sendFile(path.join(__dirname, "../Frontend/index.html"));
+  const indexPath = path.resolve(__dirname, "..", "Frontend", "index.html");
+  if (!fs.existsSync(indexPath)) {
+    console.error(`Frontend index.html not found at: ${indexPath}`);
+    return res.status(404).send("Frontend build not found. Please build the frontend first.");
+  }
+  res.sendFile(indexPath);
 });
 
 function signAuthToken(userDoc) {
