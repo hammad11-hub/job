@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  plan      Plan      @default(free)
+  users     User[]
+  jobs      Job[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model User {
+  id        String    @id @default(cuid())
+  org       Organization @relation(fields: [orgId], references: [id])
+  orgId     String
+  email     String    @unique
+  password  String
+  name      String
+  role      UserRole  @default(recruiter)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  org         Organization @relation(fields: [orgId], references: [id])
+  orgId       String
+  title       String
+  description String
+  location    String
+  type        JobType  @default(full_time)
+  seniority   Seniority @default(mid)
+  skills      String[]
+  status      JobStatus @default(active)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Plan {
+  free
+  pro
+  enterprise
+}
+
+enum UserRole {
+  admin
+  recruiter
+  hiring_manager
+}
+
+enum JobType {
+  full_time
+  part_time
+  remote
+  contract
+}
+
+enum Seniority {
+  entry
+  mid
+  senior
+  lead
+}
+
+enum JobStatus {
+  active
+  paused
+  closed
+}
