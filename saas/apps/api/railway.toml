@@ -6,6 +6,9 @@ buildCommand = "npm run build"
 startCommand = "npm start"
 healthcheckPath = "/"
 
+[source]
+directory = "apps/api"
+
 [build.env]
 NIXPACKS_NODE_VERSION = "18"
 
