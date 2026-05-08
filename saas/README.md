@@ -19,10 +19,23 @@ A premium AI Recruitment Operating System architecture scaffold.
    ```bash
    npm install
    ```
-3. Start the frontend and backend in development:
+3. Set up environment variables (copy from examples):
+   ```bash
+   cp apps/api/.env.example apps/api/.env
+   # Edit .env and add your OPENAI_API_KEY for AI features
+   ```
+4. Start the frontend and backend in development:
    ```bash
    npm run dev
    ```
+
+## AI Features
+
+- **AI Match Analysis**: Get intelligent candidate-job matching with confidence scores
+- **Recruiter Copilot**: AI-powered insights for hiring decisions
+- **Resume Screening**: Automated candidate evaluation
+
+Visit `http://localhost:3000` to see the AI demo in action.
 
 ## Recommended architecture
 

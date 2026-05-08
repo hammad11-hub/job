@@ -4,10 +4,34 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@hireos/ui": ["../../packages/ui/src"],
-      "@hireos/types": ["../../packages/types/src"]
-    }
+      "@hireos/ui": [
+        "../../packages/ui/src"
+      ],
+      "@hireos/types": [
+        "../../packages/types/src"
+      ]
+    },
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

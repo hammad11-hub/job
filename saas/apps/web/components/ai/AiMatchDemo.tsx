@@ -6,6 +6,9 @@ import { Button } from '@hireos/ui';
 interface MatchResponse {
   summary: string;
   confidence: number;
+  strengths?: string[];
+  concerns?: string[];
+  nextAction?: string;
 }
 
 export default function AiMatchDemo() {
@@ -46,17 +49,54 @@ export default function AiMatchDemo() {
           {loading ? 'Refreshing…' : 'Refresh summary'}
         </Button>
       </div>
-      <div className="rounded-3xl border border-slate-800 bg-slate-950/90 p-6 min-h-[220px]">
+      <div className="rounded-3xl border border-slate-800 bg-slate-950/90 p-6 min-h-[300px]">
         {loading ? (
           <p className="text-slate-400">Loading AI summary…</p>
         ) : error ? (
           <p className="text-sm text-rose-300">{error}</p>
         ) : result ? (
-          <>
-            <p className="text-sm text-slate-400">Confidence score</p>
-            <p className="mt-2 text-3xl font-semibold text-white">{Math.round(result.confidence * 100)}%</p>
-            <div className="mt-6 text-slate-300 whitespace-pre-wrap">{result.summary}</div>
-          </>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-slate-400">Confidence score</p>
+              <p className="mt-2 text-3xl font-semibold text-white">{result.confidence}%</p>
+            </div>
+            <div>
+              <p className="text-sm text-slate-400 mb-2">Summary</p>
+              <p className="text-slate-300">{result.summary}</p>
+            </div>
+            {result.strengths && result.strengths.length > 0 && (
+              <div>
+                <p className="text-sm text-slate-400 mb-2">Key Strengths</p>
+                <ul className="text-slate-300 text-sm space-y-1">
+                  {result.strengths.map((strength, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-green-400 mt-1">•</span>
+                      {strength}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {result.concerns && result.concerns.length > 0 && (
+              <div>
+                <p className="text-sm text-slate-400 mb-2">Potential Concerns</p>
+                <ul className="text-slate-300 text-sm space-y-1">
+                  {result.concerns.map((concern, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-yellow-400 mt-1">•</span>
+                      {concern}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {result.nextAction && (
+              <div>
+                <p className="text-sm text-slate-400 mb-2">Next Action</p>
+                <p className="text-slate-300 font-medium">{result.nextAction}</p>
+              </div>
+            )}
+          </div>
         ) : (
           <p className="text-slate-400">No AI summary available yet.</p>
         )}
