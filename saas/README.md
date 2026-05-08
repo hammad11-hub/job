@@ -37,6 +37,57 @@ A premium AI Recruitment Operating System architecture scaffold.
 
 Visit `http://localhost:3000` to see the AI demo in action.
 
+## Railway Deployment
+
+### Prerequisites
+- Railway account (https://railway.app)
+- GitHub repository connected to Railway
+
+### Deploy to Railway
+
+1. **Connect Repository**:
+   - Go to Railway dashboard
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select your repository
+
+2. **Database Setup**:
+   - Add PostgreSQL database to your project
+   - Railway will provide `DATABASE_URL` automatically
+
+3. **API Service**:
+   - Railway will auto-detect the API service in `apps/api/`
+   - Set environment variables in Railway dashboard:
+     ```
+     OPENAI_API_KEY=your_openai_key
+     DATABASE_URL=postgresql://... (auto-provided)
+     NODE_ENV=production
+     ```
+
+4. **Web Service**:
+   - Railway will auto-detect the web service in `apps/web/`
+   - Set environment variables:
+     ```
+     NEXT_PUBLIC_API_URL=https://your-api-service-url.up.railway.app
+     NODE_ENV=production
+     ```
+
+5. **Deploy**:
+   - Push changes to GitHub
+   - Railway will automatically deploy both services
+   - API will be available at: `https://your-api-service.up.railway.app`
+   - Web app at: `https://your-web-service.up.railway.app`
+
+### Environment Variables
+
+**API Service:**
+- `OPENAI_API_KEY` - Your OpenAI API key for AI features
+- `DATABASE_URL` - PostgreSQL connection string (Railway auto-provides)
+- `NODE_ENV` - Set to "production"
+
+**Web Service:**
+- `NEXT_PUBLIC_API_URL` - URL of your deployed API service
+- `NODE_ENV` - Set to "production"
+
 ## Recommended architecture
 
 - Next.js App Router for public pages and dashboard

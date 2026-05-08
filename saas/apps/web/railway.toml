@@ -1,0 +1,13 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/"
+
+[build.env]
+NIXPACKS_NODE_VERSION = "18"
+
+[environments.*.variables]
+NODE_ENV = "production"

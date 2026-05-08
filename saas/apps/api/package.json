@@ -2,7 +2,6 @@
   "name": "@hireos/api",
   "private": true,
   "version": "0.1.0",
-  "type": "module",
   "scripts": {
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",

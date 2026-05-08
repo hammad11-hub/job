@@ -69,21 +69,3 @@ Format your response as JSON with keys: summary, strengths, concerns, confidence
     }
   }
 }
-
-      const response = await this.client.responses.create({
-        model: 'gpt-4.1-mini',
-        input: prompt,
-        max_output_tokens: 220,
-        temperature: 0.2
-      });
-
-      const summary = response.output_text?.trim() || '';
-      return {
-        summary: summary || 'AI completed the request but returned no text.',
-        confidence: 0.94
-      };
-    } catch (error) {
-      throw new InternalServerErrorException('AI match generation failed.');
-    }
-  }
-}
