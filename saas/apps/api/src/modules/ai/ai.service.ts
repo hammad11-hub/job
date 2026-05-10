@@ -1,71 +1,64 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import OpenAI from 'openai';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AiService {
-  private client: OpenAI | null = null;
-
-  constructor() {
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      this.client = null;
-      return;
-    }
-
-    this.client = new OpenAI({ apiKey });
-  }
+  private readonly defaultJob =
+    'Senior React Engineer at a remote-first startup with React, TypeScript, Node.js, remote collaboration, and modern frontend architecture.';
+  private readonly defaultCandidate =
+    'Strong React experience, 5+ years of frontend development, TypeScript expertise, remote team experience, skilled in component design and scalable UI.';
 
   async getMatchSummary(jobDescription?: string, candidateProfile?: string) {
-    if (!this.client) {
-      return {
-        summary: 'AI is not configured yet. Set OPENAI_API_KEY to enable AI match insights.',
-        confidence: 0
-      };
+    const job = (jobDescription || this.defaultJob).trim();
+    const candidate = (candidateProfile || this.defaultCandidate).trim();
+
+    const strengths = this.extractStrengths(job, candidate);
+    const concerns = this.extractConcerns(job, candidate);
+    const confidence = this.calculateConfidence(strengths.length, concerns.length);
+
+    return {
+      summary: this.buildSummary(job, candidate, strengths, concerns),
+      confidence,
+      strengths,
+      concerns,
+      nextAction: this.recommendAction(confidence)
+    };
+  }
+
+  private extractStrengths(job: string, candidate: string) {
+    const skills = ['react', 'typescript', 'node.js', 'node', 'remote', 'frontend', 'ui', 'design'];
+    return skills.filter((skill) => candidate.toLowerCase().includes(skill) && job.toLowerCase().includes(skill));
+  }
+
+  private extractConcerns(job: string, candidate: string) {
+    const requiredSkills = ['react', 'typescript', 'node.js', 'node', 'remote'];
+    return requiredSkills.filter((skill) => job.toLowerCase().includes(skill) && !candidate.toLowerCase().includes(skill));
+  }
+
+  private calculateConfidence(strengthCount: number, concernCount: number) {
+    const base = 60;
+    const score = base + strengthCount * 10 - concernCount * 12;
+    return Math.max(25, Math.min(95, Math.round(score)));
+  }
+
+  private buildSummary(job: string, candidate: string, strengths: string[], concerns: string[]) {
+    const baseSummary = `This candidate looks like a good fit for the role based on shared experience in key areas.`;
+    const strengthPhrase = strengths.length
+      ? `They show strength in ${strengths.join(', ')}.`
+      : 'There are few clearly matching strengths in the provided profile.';
+    const concernPhrase = concerns.length
+      ? `Potential gaps include ${concerns.join(', ')}.`
+      : 'There are no obvious gaps in the provided profile relative to the role description.';
+
+    return `${baseSummary} ${strengthPhrase} ${concernPhrase}`;
+  }
+
+  private recommendAction(confidence: number) {
+    if (confidence >= 80) {
+      return 'Proceed with detailed screening and prepare interview questions.';
     }
-
-    try {
-      const defaultJob = 'Senior React Engineer at a remote-first startup with React, TypeScript, Node.js, remote collaboration, and modern frontend architecture.';
-      const defaultCandidate = 'Strong React experience, 5+ years of frontend development, TypeScript expertise, remote team experience, skilled in component design and scalable UI.';
-
-      const job = jobDescription || defaultJob;
-      const candidate = candidateProfile || defaultCandidate;
-
-      const prompt = `You are an AI recruiter. Analyze the following job and candidate profile and provide:
-1. A brief match summary (2-3 sentences)
-2. Key strengths of this candidate for the role
-3. Potential concerns or gaps
-4. Overall match confidence (0-100%)
-5. Next recommended action
-
-Job: ${job}
-Candidate: ${candidate}
-
-Format your response as JSON with keys: summary, strengths, concerns, confidence, nextAction`;
-
-      const response = await this.client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7,
-        max_tokens: 500
-      });
-
-      const content = response.choices[0]?.message?.content;
-      if (!content) {
-        throw new Error('No response from OpenAI');
-      }
-
-      // Parse the JSON response
-      const parsed = JSON.parse(content);
-      return {
-        summary: parsed.summary || 'Unable to generate summary',
-        confidence: parsed.confidence || 0,
-        strengths: parsed.strengths || [],
-        concerns: parsed.concerns || [],
-        nextAction: parsed.nextAction || 'Review manually'
-      };
-    } catch (error) {
-      console.error('AI Service Error:', error);
-      throw new InternalServerErrorException('Failed to generate AI match summary');
+    if (confidence >= 60) {
+      return 'Review the candidate’s technical background and ask follow-up questions.';
     }
+    return 'Consider additional candidates or clarify the role before moving forward.';
   }
 }
