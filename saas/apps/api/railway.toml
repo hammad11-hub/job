@@ -10,6 +10,7 @@ healthcheckPath = "/"
 directory = "apps/api"
 
 [build.env]
+NIXPACKS_NODE_VERSION = "18"
 NODE_ENV = "production"
 
 [deploy.env]
