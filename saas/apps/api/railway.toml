@@ -1,0 +1,16 @@
+[build]
+builder = "NIXPACKS"
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/"
+
+[source]
+directory = "apps/api"
+
+[build.env]
+NODE_ENV = "production"
+
+[deploy.env]
+NODE_ENV = "production"
