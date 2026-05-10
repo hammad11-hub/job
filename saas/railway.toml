@@ -1,8 +1,5 @@
 [build]
-builder = "NIXPACKS"
+buildCommand = "npm run build --workspace=@hireos/api"
 
 [deploy]
-startCommand = "echo 'Monorepo root - services deployed separately'"
-
-[environments.*.variables]
-NODE_ENV = "production"
+startCommand = "npm run start --workspace=@hireos/api"
