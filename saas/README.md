@@ -22,7 +22,7 @@ A premium AI Recruitment Operating System architecture scaffold.
 3. Set up environment variables (copy from examples):
    ```bash
    cp apps/api/.env.example apps/api/.env
-   # Edit .env and add your OPENAI_API_KEY for AI features
+   # No API keys needed - AI features work offline
    ```
 4. Start the frontend and backend in development:
    ```bash
@@ -58,8 +58,7 @@ Visit `http://localhost:3000` to see the AI demo in action.
    - Railway will auto-detect the API service in `apps/api/`
    - Set environment variables in Railway dashboard:
      ```
-     OPENAI_API_KEY=your_openai_key
-     DATABASE_URL=postgresql://... (auto-provided)
+     DATABASE_URL=postgresql://... (auto-provided or from Neon)
      NODE_ENV=production
      ```
 
@@ -80,8 +79,7 @@ Visit `http://localhost:3000` to see the AI demo in action.
 ### Environment Variables
 
 **API Service:**
-- `OPENAI_API_KEY` - Your OpenAI API key for AI features
-- `DATABASE_URL` - PostgreSQL connection string (Railway auto-provides)
+- `DATABASE_URL` - PostgreSQL connection string (Railway auto-provides or from Neon)
 - `NODE_ENV` - Set to "production"
 
 **Web Service:**
@@ -95,4 +93,4 @@ Visit `http://localhost:3000` to see the AI demo in action.
 - PostgreSQL + Prisma for relational data
 - Redis for caching and session state
 - Vector DB for semantic search and AI matching
-- OpenAI for embeddings and recruiter copilot features
+- Offline AI algorithms for recruiter insights
