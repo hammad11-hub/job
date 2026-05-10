@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { OrgController } from './org.controller.js';
-import { OrgService } from './org.service.js';
+import { OrgController } from './org.controller';
+import { OrgService } from './org.service';
 
 @Module({
   controllers: [OrgController],

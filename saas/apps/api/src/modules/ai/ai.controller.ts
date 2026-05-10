@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { AiService } from './ai.service.js';
+import { AiService } from './ai.service';
 
 @Controller('ai')
 export class AiController {
