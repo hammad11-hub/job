@@ -1,0 +1,15 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install && npm run build"
+
+[deploy]
+startCommand = "npm run dev"
+restartPolicyMaxRetries = 10
+
+[build.env]
+NIXPACKS_NODE_VERSION = "20"
+NODE_ENV = "production"
+
+# Use Dockerfile for Docker builds (docker-compose)
+# For Railway, nixpacks handles the build automatically
+
